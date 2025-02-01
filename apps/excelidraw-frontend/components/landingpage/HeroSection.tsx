@@ -16,7 +16,7 @@ const HeroSection = () => {
           where you are.
         </p>
         <div className=" flex gap-2">
-          <Link href={"/room/1"}>
+          <Link href={"/signup"}>
             <button className=" bg-blue-600 text-white font-bold px-6 py-3 rounded-md">
               Get Started
             </button>
