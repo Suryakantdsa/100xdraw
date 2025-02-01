@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RoomJoin from "./RoomJoin";
 
 export function RoomCanvas({ roomId }: { roomId: string }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -39,6 +40,7 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
   return (
     <div>
       <Canvas roomId={roomId} socket={socket} />
+      <RoomJoin />
       <ToastContainer
         position="top-right"
         autoClose={3000}

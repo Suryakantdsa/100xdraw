@@ -48,3 +48,24 @@
     --ring: 224.3 76.3% 48%;
   }
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar (for horizontal scrollbars) */
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+  border-radius: 4px; /* Rounded corners for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar thumb on hover */
+}

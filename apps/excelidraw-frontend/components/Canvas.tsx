@@ -4,6 +4,7 @@ import { Minus, Plus } from "lucide-react";
 import { Game } from "@/draw/Game";
 import Toolbar from "./Toolbar";
 import { Tool } from "@/Interfaces/IShape";
+import Logo from "./Logo";
 export function Canvas({
   roomId,
   socket,
@@ -68,6 +69,7 @@ export function Canvas({
         width={window.innerWidth}
         height={window.innerHeight}
       ></canvas>
+      <Logo />
       <Toolbar
         setSelectedTool={setSelectedTool}
         selectedTool={selectedTool}
