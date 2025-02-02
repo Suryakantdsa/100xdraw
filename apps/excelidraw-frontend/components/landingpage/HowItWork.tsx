@@ -5,7 +5,7 @@ import {
   Share,
 } from "lucide-react";
 import Image from "next/image";
-import React, { JSX } from "react";
+import React from "react";
 import FeatureItem from "./Steps";
 
 const HowItWork = () => {
@@ -41,7 +41,7 @@ const HowItWork = () => {
           Get started with excalidraw in just a few simple steps.
         </h1>
       </div>
-      <div className="py-6 flex flex-col lg:flex-row w-full max-w-7xl justify-center items-center px-4 gap-8">
+      <div className="py-6 flex flex-col lg:flex-row w-full max-w-7xl justify-center items-center px-16  md:px-10 gap-8">
         <div className="flex flex-col gap-10 w-full lg:w-1/2">
           {features.map((feature, index) => (
             <FeatureItem key={index} {...feature} />

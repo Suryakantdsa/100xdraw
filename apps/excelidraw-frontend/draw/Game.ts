@@ -36,7 +36,7 @@ export class Game {
 
   async init() {
     this.existingShapes = await getExistingShapes(this.roomId);
-    console.log(this.existingShapes);
+    // console.log(this.existingShapes);
     this.clearCanvas();
   }
 
@@ -55,8 +55,6 @@ export class Game {
   }
 
   initMouseHandlers() {
-    console.log("here canvas event initiciated");
-    console.log(this.selectedTool);
     this.canvas.addEventListener("mousedown", this.mouseDownHandler);
     this.canvas.addEventListener("mousemove", this.mouseMoveHandler.bind(this));
     this.canvas.addEventListener("mouseup", this.mouseUpHandler);
@@ -92,7 +90,6 @@ export class Game {
 
     this.panX = mouseX - canvasMouseX * this.scale;
     this.panY = mouseY - canvasMouseY * this.scale;
-    console.log(this.scale);
     this.clearCanvas();
   };
   // setZoom(zoom: number) {
@@ -147,7 +144,7 @@ export class Game {
     if (this.clicked) {
       const width = adjustedX - this.startX;
       const height = adjustedY - this.startY;
-      console.log(adjustedX, adjustedY);
+      // console.log(adjustedX, adjustedY);
       this.clearCanvas();
       this.ctx.strokeStyle = "#3b82f6";
       const selectedTool = this.selectedTool;
@@ -167,7 +164,7 @@ export class Game {
         );
         this.ctx.stroke();
       } else if (selectedTool === Tool.PENCIL) {
-        console.log(this.existingShapes);
+        // console.log(this.existingShapes);
         const currentShape =
           this.existingShapes[this.existingShapes.length - 1];
         if (currentShape && currentShape.type === Tool.PENCIL) {
@@ -306,7 +303,7 @@ export class Game {
     this.ctx.save();
     this.ctx.translate(this.panX, this.panY);
     this.ctx.scale(this.scale, this.scale);
-    console.log(this.existingShapes);
+    // console.log(this.existingShapes);
     if (this.existingShapes.length) {
       this.existingShapes.forEach((shape) => {
         if (shape?.type === Tool.RECTANGEL) {

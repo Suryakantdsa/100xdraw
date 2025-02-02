@@ -9,7 +9,6 @@ function App() {
   return (
     <div className="min-h-screen bg-black w-full overflow-hidden ">
       <Navbar />
-
       <HeroSection />
       <Feature />
       <HowItWork />

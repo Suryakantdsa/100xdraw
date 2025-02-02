@@ -18,7 +18,7 @@ app.use(cors());
 app.post("/signup", async (req, res) => {
   const parsedData = CreateUserSchema.safeParse(req.body);
   if (!parsedData.success) {
-    console.log(parsedData.error);
+    // console.log(parsedData.error);
     res.json({
       message: "Incorrect inputs",
     });
@@ -147,7 +147,7 @@ app.get("/chats/:roomId", async (req, res) => {
       messages,
     });
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     res.json({
       messages: [],
     });

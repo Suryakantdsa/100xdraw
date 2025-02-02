@@ -10,7 +10,7 @@ const Navbar = () => {
   const { isMenuBarCLicked } = menuItemStore();
   return (
     <nav
-      className={`w-full px-4 sm:px-12 py-4 flex justify-between items-center shadow-blue-500 shadow-sm 
+      className={` sticky top-0 w-full px-4 sm:px-12 py-4 flex justify-between items-center shadow-blue-500 shadow-sm 
             overflow-hidden
       `}
     >

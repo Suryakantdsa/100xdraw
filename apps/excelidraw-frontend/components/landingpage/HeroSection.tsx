@@ -4,13 +4,13 @@ import React from "react";
 
 const HeroSection = () => {
   return (
-    <div className="flex mt-8 w-full items-center flex-col-reverse sm:flex-row">
-      <div className="flex justify-center items-center sm:items-start flex-col text-white p-6 sm:p-10 gap-8 w-full sm:w-1/2">
-        <h1 className="text-5xl sm:text-7xl font-bold text-center sm:text-start ">
+    <div className="flex mt-8 w-full items-center flex-col md:flex-row">
+      <div className="flex justify-center items-center md:items-start flex-col text-white p-6 sm:p-10 gap-8 w-full md:w-1/2">
+        <h1 className=" text-4xl md:text-6xl font-bold text-center  md:text-start  ">
           Collaborate and create{" "}
           <span className="text-blue-600">with 100xdraw</span>
         </h1>
-        <p className="text-center sm:text-start text-lg sm:text-xl text-slate-400">
+        <p className="text-center md:text-start text-base text-slate-400">
           Unleash your creativity with our intuitive whiteboard tool. Sketch,
           brainstorm, and collaborate in real-time with your team, no matter
           where you are.
@@ -26,11 +26,11 @@ const HeroSection = () => {
           </button>
         </div>
       </div>
-      <div className="sm:w-1/2 w-full p-4">
+      <div className="md:w-1/2 w-full p-4 flex justify-center">
         <Image
           src={"/darkmodehero.webp"}
           width={600}
-          height={600}
+          height={800}
           alt="heroimg"
         />
       </div>

@@ -5,6 +5,8 @@ import { Game } from "@/draw/Game";
 import Toolbar from "./Toolbar";
 import { Tool } from "@/Interfaces/IShape";
 import Logo from "./Logo";
+import UserInfo from "./UserInfo";
+import ToolbarStore from "@/lib/store/ToolbarStore";
 export function Canvas({
   roomId,
   socket,
@@ -14,7 +16,8 @@ export function Canvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
-  const [selectedTool, setSelectedTool] = useState<Tool>(Tool.CIRCLE);
+  // const [selectedTool, setSelectedTool] = useState<Tool>(Tool.CIRCLE);
+  const { selectedTool } = ToolbarStore();
   const [zoom, setZoom] = useState(0.75);
 
   const decreaseZoom = () => {
@@ -55,7 +58,7 @@ export function Canvas({
         g.destroy();
       };
     }
-  }, [canvasRef]);
+  }, [canvasRef, roomId, socket]);
 
   return (
     <div
@@ -71,9 +74,9 @@ export function Canvas({
       ></canvas>
       <Logo />
       <Toolbar
-        setSelectedTool={setSelectedTool}
-        selectedTool={selectedTool}
-        roomId={roomId}
+      // setSelectedTool={setSelectedTool}
+      // selectedTool={selectedTool}
+      // roomId={roomId}
       />
       <div
         style={{
@@ -98,6 +101,7 @@ export function Canvas({
           <Plus size={20} />
         </button>
       </div>
+      <UserInfo />
     </div>
   );
 }

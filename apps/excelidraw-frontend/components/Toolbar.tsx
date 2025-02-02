@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { Tool } from "@/Interfaces/IShape";
-import { toast } from "react-toastify";
+import ToolbarStore from "@/lib/store/ToolbarStore";
 interface ToolbarArrI {
   name: Tool;
   title: string;
@@ -58,20 +58,8 @@ function IconButton({
   );
 }
 
-const Toolbar = ({
-  selectedTool,
-  setSelectedTool,
-  roomId,
-}: {
-  selectedTool: Tool;
-  setSelectedTool: (t: Tool) => void;
-  roomId: string;
-}) => {
-  const copyToClipBoard = () => {
-    const url = `${window.location.origin}/canvas/${roomId}`;
-    navigator.clipboard.writeText(url);
-    toast.success("Collab link copied to clipboard! Share it with others.");
-  };
+const Toolbar = () => {
+  const { selectedTool, setSelectedTool } = ToolbarStore();
   return (
     <div
       style={{
@@ -91,11 +79,12 @@ const Toolbar = ({
       {toolbarArr.map((tool, id) => (
         <IconButton
           key={id}
-          onClick={() =>
-            tool.name === Tool.USER
-              ? copyToClipBoard()
-              : setSelectedTool(tool.name)
-          }
+          onClick={() => setSelectedTool(tool.name)}
+          // onClick={() =>
+          //   tool.name === Tool.USER
+          //     ? copyToClipBoard()
+          //     : setSelectedTool(tool.name)
+          // }
           activated={selectedTool === tool.name}
           icon={tool.icon}
           title={tool.title}

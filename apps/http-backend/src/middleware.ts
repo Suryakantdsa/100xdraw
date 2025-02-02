@@ -5,9 +5,9 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 export function middleware(req: Request, res: Response, next: NextFunction) {
   let token = req.headers["authorization"] ?? "";
   token = token.split(" ")[1] || "";
-  console.log(token);
+  // console.log(token);
   const decoded = jwt.verify(token, JWT_SECRET);
-  console.log(decoded);
+  // console.log(decoded);
   if (decoded) {
     // @ts-ignore: TODO: Fix this
     req.userId = decoded.userId;
