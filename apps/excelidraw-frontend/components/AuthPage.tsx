@@ -42,6 +42,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         localStorage.setItem("userId", response.userId);
       }
       const pendingRoomId = localStorage.getItem("pendingRoomId");
+      console.log(pendingRoomId, isSignin);
       if (pendingRoomId) {
         localStorage.removeItem("pendingRoomId");
         router.push(`room/?roomId=${pendingRoomId}`);

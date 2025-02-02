@@ -39,7 +39,7 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
     // };
 
     return () => ws.close();
-  }, [tokenValue, roomId]);
+  }, [tokenValue]);
 
   if (!socket) {
     return null;
