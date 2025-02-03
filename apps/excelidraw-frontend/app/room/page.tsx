@@ -3,18 +3,25 @@ export const dynamic = "force-dynamic";
 import { RoomCanvas } from "@/components/RoomCanvas";
 import { useAuthRedirect } from "@/components/useAuthRedirect";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo, Suspense } from "react";
 
-export default function CanvasPage() {
+function CanvasContent() {
   const searchParams = useSearchParams();
-  const [roomId, setRoomId] = useState("");
 
-  useEffect(() => {
-    const id = searchParams.get("roomId");
-    if (id) setRoomId(id);
-  }, [searchParams]);
+  const roomId = useMemo(
+    () => searchParams.get("roomId") || "",
+    [searchParams]
+  );
 
   useAuthRedirect();
 
-  return <RoomCanvas roomId={roomId ? roomId : ""} />;
+  return <RoomCanvas roomId={roomId} />;
+}
+
+export default function CanvasPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CanvasContent />
+    </Suspense>
+  );
 }
