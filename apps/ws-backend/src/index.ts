@@ -102,6 +102,11 @@ wss.on("connection", function connection(ws, request) {
         });
         return;
       }
+      console.log({
+        roomId: Number(roomId),
+        message,
+        userId,
+      });
       await prismaClient.chat.create({
         data: {
           roomId: Number(roomId),
