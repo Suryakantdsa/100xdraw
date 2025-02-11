@@ -303,7 +303,6 @@ export class Game {
     this.ctx.save();
     this.ctx.translate(this.panX, this.panY);
     this.ctx.scale(this.scale, this.scale);
-    // console.log(this.existingShapes);
     if (this.existingShapes.length) {
       this.existingShapes.forEach((shape) => {
         if (shape?.type === Tool.RECTANGEL) {

@@ -8,6 +8,7 @@ import Logo from "./landingpage/Logo";
 import { CreateUserSchema, SigninSchema } from "@repo/common/types";
 import { signin, signup } from "@/utils/api";
 import { AxiosError } from "axios";
+import { setTokenCookie } from "@/utils/cookies";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const router = useRouter();
@@ -40,9 +41,11 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("user", response.username);
         localStorage.setItem("userId", response.userId);
+        const token = response.token;
+        await setTokenCookie(token);
       }
       const pendingRoomId = localStorage.getItem("pendingRoomId");
-      console.log(pendingRoomId, isSignin);
+      // console.log(pendingRoomId, isSignin);
       if (pendingRoomId) {
         localStorage.removeItem("pendingRoomId");
         router.push(`room/?roomId=${pendingRoomId}`);

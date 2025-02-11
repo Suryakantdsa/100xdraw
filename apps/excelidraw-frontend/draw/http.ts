@@ -1,4 +1,5 @@
 import { HTTP_BACKEND } from "@/config";
+import { getVerifiedToken } from "@/utils/cookies";
 import axios from "axios";
 
 export async function getExistingShapes(roomId: string) {
