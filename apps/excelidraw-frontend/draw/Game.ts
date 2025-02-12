@@ -12,12 +12,13 @@ export class Game {
   private zoom: number = 1;
   private panX: number = 0;
   private panY: number = 0;
-  private scale: number = 1;
+  scale: number = 1;
   private pathErase: [number, number][];
   private startX: number = 0;
   private startY: number = 0;
   private lastMouseX: number = 0;
   private lastMouseY: number = 0;
+  onScaleChange?: (scale: number) => void;
   socket: WebSocket;
   private roomId;
   constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
@@ -88,21 +89,17 @@ export class Game {
 
     this.scale = newScale;
 
+    this.onScaleChange?.(this.scale);
     this.panX = mouseX - canvasMouseX * this.scale;
     this.panY = mouseY - canvasMouseY * this.scale;
     this.clearCanvas();
   };
-  // setZoom(zoom: number) {
-  //   this.scale = zoom;
-  // }
+
   setCanvasBg(color: string) {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
-  // getZoomValue() {
-  //   const a = this.scale;
-  //   return a;
-  // }
+
   inc() {
     this.scale += 0.2;
     this.clearCanvas();
@@ -113,21 +110,30 @@ export class Game {
     this.clearCanvas();
   }
   mouseDownHandler = (e: MouseEvent) => {
-    this.clicked = true; //
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-    console.log(this.startX, this.startY);
+    const rect = this.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const adjustedX = (mouseX - this.panX) / this.scale;
+    const adjustedY = (mouseY - this.panY) / this.scale;
+
+    this.clicked = true;
+    this.startX = adjustedX;
+    this.startY = adjustedY;
+
     if (this.selectedTool === Tool.PENCIL) {
-      // console.log(this.selectedTool);
-      this.existingShapes.push({
+      const newShape: IShape = {
         type: Tool.PENCIL,
-        points: [{ x: e.clientX, y: e.clientY }],
-      });
+        points: [{ x: adjustedX, y: adjustedY }],
+      };
+
+      this.existingShapes.push(newShape);
     } else if (this.selectedTool === Tool.PAN) {
       this.isPanning = true;
       this.isDrawing = false;
       this.lastMouseX = e.clientX;
       this.lastMouseY = e.clientY;
+      this.canvas.style.cursor = "grabbing";
     } else if (this.selectedTool === Tool.LINE) {
       this.isDrawing = true;
     } else if (this.selectedTool === Tool.ERASER) {
@@ -141,18 +147,21 @@ export class Game {
 
     const adjustedX = (mouseX - this.panX) / this.scale;
     const adjustedY = (mouseY - this.panY) / this.scale;
+
     if (this.clicked) {
-      const width = adjustedX - this.startX;
-      const height = adjustedY - this.startY;
-      // console.log(adjustedX, adjustedY);
       this.clearCanvas();
       this.ctx.strokeStyle = "#3b82f6";
       const selectedTool = this.selectedTool;
 
       if (selectedTool === Tool.RECTANGEL) {
+        const width = adjustedX - this.startX;
+        const height = adjustedY - this.startY;
         this.ctx.strokeRect(this.startX, this.startY, width, height);
       } else if (selectedTool === Tool.CIRCLE) {
-        const radius = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+        const radius = Math.sqrt(
+          Math.pow(adjustedX - this.startX, 2) +
+            Math.pow(adjustedY - this.startY, 2)
+        );
         this.ctx.strokeStyle = "#3b82f6";
         this.ctx.beginPath();
         this.ctx.arc(
@@ -164,12 +173,20 @@ export class Game {
         );
         this.ctx.stroke();
       } else if (selectedTool === Tool.PENCIL) {
-        // console.log(this.existingShapes);
         const currentShape =
           this.existingShapes[this.existingShapes.length - 1];
+
         if (currentShape && currentShape.type === Tool.PENCIL) {
-          currentShape.points.push({ x: adjustedX, y: adjustedY });
-          this.drawPencil(currentShape);
+          const adjustedPoint = {
+            x: adjustedX,
+            y: adjustedY,
+          };
+
+          currentShape.points.push(adjustedPoint);
+
+          this.clearCanvas();
+
+          this.existingShapes.forEach((shape) => this.drawShape(shape));
         }
       } else if (selectedTool === Tool.PAN) {
         const deltaX = mouseX - this.lastMouseX;
@@ -186,20 +203,49 @@ export class Game {
         if (!this.isDrawing) return;
         this.ctx.beginPath();
         this.ctx.moveTo(this.startX, this.startY);
-        this.ctx.lineTo(e.offsetX, e.offsetY);
-        this.ctx.strokeStyle = "#3b82f6";
-        this.ctx.lineWidth = 2;
+        this.ctx.lineTo(adjustedX, adjustedY);
         this.ctx.stroke();
       } else if (selectedTool === Tool.ERASER) {
-        console.log(selectedTool);
-        this.pathErase.push([e.clientX, e.clientY]);
+        this.pathErase.push([adjustedX, adjustedY]);
       }
     }
   };
+
+  drawShape(shape: IShape) {
+    this.ctx.strokeStyle = "#3b82f6";
+    if (shape.type === Tool.RECTANGEL) {
+      this.ctx.strokeRect(
+        shape.x + this.panX,
+        shape.y + this.panY,
+        shape.width,
+        shape.height
+      );
+    } else if (shape.type === Tool.CIRCLE) {
+      this.ctx.beginPath();
+      this.ctx.arc(
+        shape.centerX + this.panX,
+        shape.centerY + this.panY,
+        shape.radius,
+        0,
+        2 * Math.PI
+      );
+      this.ctx.stroke();
+    } else if (shape.type === Tool.LINE) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(
+        shape.points[0].x + this.panX,
+        shape.points[0].y + this.panY
+      );
+      this.ctx.lineTo(
+        shape.points[1].x + this.panX,
+        shape.points[1].y + this.panY
+      );
+      this.ctx.stroke();
+    }
+  }
+
   mouseUpHandler = (e: MouseEvent) => {
     this.clicked = false;
-    // const width = e.clientX - this.startX;
-    // const height = e.clientY - this.startY;
 
     const rect = this.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -235,10 +281,14 @@ export class Game {
           roomId: this.roomId,
         })
       );
-      // console.log(this.socket.readyState.toString());
-      // const currentShape=
     } else if (this.selectedTool === Tool.PAN) {
       this.isPanning = false;
+      this.canvas.style.cursor = "crosshair";
+
+      this.lastMouseX = 0;
+      this.lastMouseY = 0;
+      this.startX = 0;
+      this.startY = 0;
     } else if (this.selectedTool === Tool.LINE) {
       this.isDrawing = false;
       const offsetX = e.offsetX;
@@ -343,8 +393,8 @@ export class Game {
   drawPencil(shape: IShape) {
     if (shape.type === Tool.PENCIL) {
       this.ctx.strokeStyle = "#3b82f6";
-      const points = shape.points;
       this.ctx.beginPath();
+      const points = shape.points;
       this.ctx.moveTo(points[0].x, points[0].y);
       points.forEach((point) => this.ctx.lineTo(point.x, point.y));
       this.ctx.stroke();

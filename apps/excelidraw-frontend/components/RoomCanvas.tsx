@@ -50,7 +50,7 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
       <Canvas roomId={roomId} socket={socket} />
       <RoomJoin />
       <ToastContainer
-        position="top-right"
+        position="top-left"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
