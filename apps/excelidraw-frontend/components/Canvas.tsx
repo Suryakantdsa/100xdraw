@@ -28,7 +28,15 @@ export function Canvas({
     setZoom((prevZoom) => Math.max(0.5, prevZoom + 0.1));
     game?.inc();
   };
+  useEffect(() => {
+    const handleScaleChange = (newScale: number) => {
+      setZoom(newScale);
+    };
 
+    if (game) {
+      game.onScaleChange = handleScaleChange;
+    }
+  }, [game]);
   useEffect(() => {
     const handleResize = () => {
       if (canvasRef.current) {
