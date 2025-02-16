@@ -36,4 +36,12 @@ export type IShape =
     }
   | {
       type: Tool.ERASER;
+    }
+  | {
+      type: "AISvg";
+      path: string;
+      position?: { x: number; y: number };
+      strokeStyle?: string;
+      lineWidth?: number;
+      fillStyle?: string;
     };

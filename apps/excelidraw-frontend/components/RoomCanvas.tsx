@@ -33,13 +33,13 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
     //   console.error("Something went wrong. Please try again.");
     // };
 
-    // ws.onclose = () => {
-    //   // toast("Connection closed");
-    //   console.error("connection closed");
-    // };
+    ws.onclose = () => {
+      toast("Connection closed");
+      // console.error("connection closed");
+    };
 
     return () => ws.close();
-  }, [tokenValue]);
+  }, [tokenValue, roomId]);
 
   if (!socket) {
     return null;

@@ -41,6 +41,40 @@ export class Game {
     this.clearCanvas();
   }
 
+  addAIShape(aiShape: string, position?: { x: number; y: number }) {
+    // console.log("aishpae_________", aiShape);
+    if (aiShape) {
+      this.existingShapes.push({
+        type: "AISvg",
+        path: aiShape
+          .replace(/```json/g, "") // Remove starting code block
+          .replace(/```xml\n/g, "") // Remove starting code block
+          .replace(/```/g, "") // Remove ending code block
+          .replace(/\\n/g, "") // Remove newline escape characters
+          .trim(),
+        position: position || { x: 0, y: 0 },
+      });
+      this.socket.send(
+        JSON.stringify({
+          type: "chat",
+          message: JSON.stringify({
+            type: "AISvg",
+            path: aiShape
+              .replace(/```json/g, "") // Remove starting code block
+              .replace(/```xml\n/g, "") // Remove starting code block
+              .replace(/```/g, "") // Remove ending code block
+              .replace(/\\n/g, "") // Remove newline escape characters
+              .trim(),
+            position: position || { x: 0, y: 0 },
+          }),
+          roomId: this.roomId,
+        })
+      );
+      this.clearCanvas();
+      // console.log(this.existingShapes[this.existingShapes.length - 1]);
+    }
+  }
+
   initGetSockectRes() {
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
@@ -373,12 +407,37 @@ export class Game {
           this.drawPencil(shape);
         } else if (shape?.type === Tool.LINE) {
           this.drawLine(shape);
+        } else if (shape?.type === "AISvg") {
+          // console.log(this.existingShapes[this.existingShapes.length - 1]);
+          this.drawAISvg(shape);
         }
       });
     }
     this.ctx.restore();
   }
 
+  drawAISvg(shape: IShape) {
+    if (shape.type === "AISvg") {
+      this.ctx.save();
+      if (!shape.position) {
+        return;
+      }
+      // Translate to the shape's position
+      this.ctx.translate(shape.position.x, shape.position.y);
+
+      // Create a Path2D object from the SVG path string
+      const path = new Path2D(shape.path);
+
+      this.ctx.strokeStyle = shape.strokeStyle || "#FF0000";
+      this.ctx.lineWidth = shape.lineWidth || 1;
+      this.ctx.fillStyle = shape.fillStyle || "transparent";
+
+      this.ctx.fill(path);
+      this.ctx.stroke(path);
+
+      this.ctx.restore();
+    }
+  }
   drawLine(shape: IShape) {
     if (shape.type === Tool.LINE) {
       this.ctx.strokeStyle = "#3b82f6";

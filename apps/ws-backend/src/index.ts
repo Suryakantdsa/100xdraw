@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config";
-import { prismaClient } from "@repo/db/client";
+import prismaClient from "@repo/db/client";
 
 const wss = new WebSocketServer({ port: 8000 });
 console.log("websocket server is running on ws://localhost:8000");
@@ -63,12 +63,36 @@ wss.on("connection", function connection(ws, request) {
       parsedData = JSON.parse(data); // {type: "join-room", roomId: 1}
     }
 
+    // if (parsedData.type === "join_room") {
+    //   const user = users.find((x) => x.ws === ws);
+    //   user?.rooms.push(parsedData.roomId);
+    // }
+
     if (parsedData.type === "join_room") {
-      const user = users.find((x) => x.ws === ws);
-      user?.rooms.push(parsedData.roomId);
+      const roomId = parsedData.roomId;
+      // console.log("roomId_________", roomId);
+      if (!roomId) {
+        return ws.close();
+      }
+      const userRoom = users.find((user) => user.userId === userId);
+      if (!userRoom) {
+        return ws.close();
+      }
+      userRoom.rooms.push(roomId);
+      ws.send(
+        JSON.stringify({
+          type: "join_room",
+          message: "Joined the room sucessfully",
+          roomId,
+        })
+      );
     }
 
     if (parsedData.type === "leave_room") {
+      const roomId = Number(parsedData.roomId);
+      if (!roomId) {
+        return;
+      }
       const user = users.find((x) => x.ws === ws);
       if (!user) {
         return;
@@ -76,7 +100,6 @@ wss.on("connection", function connection(ws, request) {
       user.rooms = user?.rooms.filter((x) => x === parsedData.room);
     }
 
-    // console.log("message received");
     // console.log(parsedData);
 
     if (parsedData.type === "chat") {
@@ -102,11 +125,6 @@ wss.on("connection", function connection(ws, request) {
         });
         return;
       }
-      console.log({
-        roomId: Number(roomId),
-        message,
-        userId,
-      });
       await prismaClient.chat.create({
         data: {
           roomId: Number(roomId),
@@ -114,7 +132,11 @@ wss.on("connection", function connection(ws, request) {
           userId,
         },
       });
-
+      // console.log("sojidhbk_______", {
+      //   roomId: Number(roomId),
+      //   message,
+      //   userId,
+      // });
       users.forEach((user) => {
         if (user.rooms.includes(roomId)) {
           user.ws.send(
@@ -122,6 +144,7 @@ wss.on("connection", function connection(ws, request) {
               type: "chat",
               message: message,
               roomId,
+              userId: userId,
             })
           );
         }

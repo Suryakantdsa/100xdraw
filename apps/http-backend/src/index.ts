@@ -7,7 +7,7 @@ import {
   SigninSchema,
   CreateRoomSchema,
 } from "@repo/common/types";
-import { prismaClient } from "@repo/db/client";
+import prismaClient from "@repo/db/client";
 import bcrypt from "bcrypt";
 import cors from "cors";
 

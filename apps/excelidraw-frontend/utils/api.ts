@@ -45,3 +45,27 @@ export const roomCreate = async (data: { name: string }, token: string) => {
     throw error;
   }
 };
+
+import toast from "react-hot-toast";
+
+export const generateSVGShape = async (prompt: string) => {
+  try {
+    const response = await fetch("/api/generate-svg", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate SVG path");
+    }
+
+    const data = await response.json();
+    return data.svgPath;
+  } catch (error) {
+    toast.error("Error generating SVG. Please try again.");
+    throw error;
+  }
+};

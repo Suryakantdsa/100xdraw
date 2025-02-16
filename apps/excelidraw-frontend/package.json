@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
+    "@google/generative-ai": "^0.21.0",
     "@repo/common": "workspace:*",
+    "@repo/ui": "workspace:*",
     "axios": "^1.7.9",
     "konva": "^9.3.18",
     "lucide-react": "^0.473.0",
+    "motion": "^12.4.2",
     "next": "15.1.5",
+    "openai": "^4.85.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.1",

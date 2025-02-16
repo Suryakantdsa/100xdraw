@@ -13,7 +13,7 @@ const FeatureCard = ({
   title,
   description,
   iconColor,
-  hoverBg,
+  // hoverBg,
 }: IfeatureCard) => {
   return (
     <div
