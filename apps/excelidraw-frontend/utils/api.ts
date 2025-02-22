@@ -1,6 +1,7 @@
+import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
 
-export const HTTP_BACKEND = "http://localhost:4001";
+// export const HTTP_BACKEND = "http://localhost:4001";
 
 export const api = axios.create({
   baseURL: HTTP_BACKEND,
@@ -26,7 +27,10 @@ export const signup = async (data: {
 // Signin Request
 export const signin = async (data: { email: string; password: string }) => {
   try {
-    const response = await api.post("/signin", data);
+    const response = await api.post(
+      "https://api.100xdraw.run.place/signin",
+      data
+    );
     return response.data;
   } catch (error) {
     throw error;
